@@ -1,0 +1,371 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin - User Profile #{{ user.id }}{% endblock %}
+{% block heading %}User Profile: {{ user.fullname or 'User #' ~ user.id }}{% endblock %}
+
+{% block content %}
+
+<style>
+:root {
+    --primary: #3b82f6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --border: #e2e8f0;
+    --bg-surface: #ffffff;
+    --bg-muted: #f8fafc;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+/* Sidebar Profile Card */
+.user-card {
+    text-align: center;
+}
+
+.avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    margin: 0 auto 16px auto;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin: 2px;
+}
+
+.badge-role { background: #e0e7ff; color: #3730a3; text-transform: uppercase; }
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+
+/* Grid Info Display */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.info-item {
+    background: var(--bg-muted);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.info-item label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.info-item span {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+/* Document Images */
+.doc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.doc-box {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    background: var(--bg-muted);
+    text-align: center;
+}
+
+.doc-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.doc-img:hover {
+    transform: scale(1.02);
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-approve { background: var(--success); }
+.btn-reject { background: var(--danger); }
+.btn-back { background: var(--text-muted); }
+
+/* Section Title */
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--bg-muted);
+    padding-bottom: 8px;
+}
+</style>
+
+<div style="margin-top: 15px;">
+    <a href="{{ url_for('admin.admin_rooms') }}" class="btn btn-back">← Back to Listings</a>
+</div>
+
+<div class="profile-container">
+    
+    <!-- Sidebar: Account Card -->
+    <div>
+        <div class="card user-card">
+            {% if user.owner_profile and user.owner_profile.profile_photo %}
+                <img src="{{ url_for('static', filename='uploads/' + user.owner_profile.profile_photo) }}" class="avatar-large" alt="Profile Photo">
+            {% else %}
+                <div class="avatar-large">
+                    {{ (user.fullname or 'U')[0] | upper }}
+                </div>
+            {% endif %}
+
+            <h3 style="margin: 0 0 4px 0; color: var(--text-dark);">{{ user.fullname or 'No Name Provided' }}</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 0 0 12px 0;">{{ user.email }}</p>
+
+            <div>
+                <span class="badge badge-role">{{ user.role }}</span>
+                {% if user.isadmin %}
+                    <span class="badge badge-success">Admin</span>
+                {% endif %}
+                {% if user.isactive %}
+                    <span class="badge badge-success">Active</span>
+                {% else %}
+                    <span class="badge badge-danger">Disabled</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 class="section-title">Quick Stats</h4>
+            <div class="info-item" style="margin-bottom: 10px;">
+                <label>User ID</label>
+                <span>#{{ user.id }}</span>
+            </div>
+            <div class="info-item" style="margin-bottom: 10px;">
+                <label>Total Rooms Listed</label>
+                <span>{{ user.owner_profile.rooms | length if user.owner_profile else 0 }} Rooms</span>
+            </div>
+            <div class="info-item">
+                <label>KYC Verification</label>
+                <span>
+                    {% if user.owner_profile and user.owner_profile.approved %}
+                        <strong style="color: var(--success);">Verified ✓</strong>
+                    {% else %}
+                        <strong style="color: var(--warning);">Unverified / Pending</strong>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Panel -->
+    <div>
+        <!-- Basic Account Details -->
+        <div class="card">
+            <h4 class="section-title">Account Details</h4>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Full Name</label>
+                    <span>{{ user.fullname or 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Email Address</label>
+                    <span>{{ user.email }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Phone Number</label>
+                    <span>{{ user.phone or 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Role</label>
+                    <span>{{ user.role | capitalize }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Owner Verification / KYC Details -->
+        {% if user.owner_profile %}
+        <div class="card">
+            <h4 class="section-title">Owner KYC Verification</h4>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Citizenship Number</label>
+                    <span>{{ user.owner_profile.citizenship_no or 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Contact Number</label>
+                    <span>{{ user.owner_profile.contact or user.phone or 'N/A' }}</span>
+                </div>
+                <div class="info-item" style="grid-column: span 2;">
+                    <label>Address</label>
+                    <span>{{ user.owner_profile.address or 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Applied Date</label>
+                    <span>{{ user.owner_profile.applied_at.strftime('%Y-%m-%d %H:%M') if user.owner_profile.applied_at else 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Approval Status</label>
+                    <span>
+                        {% if user.owner_profile.approved %}
+                            <span class="badge badge-success">Approved</span>
+                            <small style="color: var(--text-muted);">
+                                (at {{ user.owner_profile.approved_at.strftime('%Y-%m-%d') if user.owner_profile.approved_at else '' }})
+                            </small>
+                        {% else %}
+                            <span class="badge badge-warning">Pending Approval</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            {% if user.owner_profile.rejection_reason %}
+                <div style="margin-top: 15px; padding: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
+                    <strong style="color: var(--danger); font-size: 13px;">Rejection Reason:</strong>
+                    <p style="margin: 4px 0 0 0; color: #991b1b; font-size: 13px;">{{ user.owner_profile.rejection_reason }}</p>
+                </div>
+            {% endif %}
+
+            <!-- Citizenship Documents -->
+            <h5 style="margin-top: 20px; margin-bottom: 10px; color: var(--text-dark);">Identity Documents</h5>
+            <div class="doc-grid">
+                <div class="doc-box">
+                    <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">Citizenship (Front)</label>
+                    {% if user.owner_profile.citizenship_photo %}
+                        <a href="{{ url_for('static', filename='uploads/' + user.owner_profile.citizenship_photo) }}" target="_blank">
+                            <img src="{{ url_for('static', filename='uploads/' + user.owner_profile.citizenship_photo) }}" class="doc-img" alt="Citizenship Front">
+                        </a>
+                    {% else %}
+                        <div style="padding: 40px; color: var(--text-muted); font-size: 12px;">No Image Uploaded</div>
+                    {% endif %}
+                </div>
+
+                <div class="doc-box">
+                    <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">Citizenship (Back)</label>
+                    {% if user.owner_profile.citizenship_back_photo %}
+                        <a href="{{ url_for('static', filename='uploads/' + user.owner_profile.citizenship_back_photo) }}" target="_blank">
+                            <img src="{{ url_for('static', filename='uploads/' + user.owner_profile.citizenship_back_photo) }}" class="doc-img" alt="Citizenship Back">
+                        </a>
+                    {% else %}
+                        <div style="padding: 40px; color: var(--text-muted); font-size: 12px;">No Image Uploaded</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- KYC Action Controls -->
+            <div class="btn-group" style="margin-top: 20px;">
+                {% if not user.owner_profile.approved %}
+                    <form action="{{ url_for('admin.approve_owner', owner_id=user.owner_profile.owner_id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-approve">✓ Approve KYC</button>
+                    </form>
+                {% endif %}
+
+                <button type="button" class="btn btn-reject" onclick="toggleRejectionForm()">
+                    {{ 'Reject / Revoke KYC' if user.owner_profile.approved else '✗ Reject Application' }}
+                </button>
+            </div>
+
+            <!-- Rejection Reason Form -->
+            <div id="rejectionForm" style="display: none; margin-top: 15px; padding: 15px; background: #fff1f2; border-radius: 8px; border: 1px solid #fecdd3;">
+                <form action="{{ url_for('admin.reject_owner', owner_id=user.owner_profile.owner_id) }}" method="POST">
+                    <label style="font-size: 12px; font-weight: 700; color: #9f1239; display: block; margin-bottom: 6px;">Reason for Rejection</label>
+                    <textarea name="rejection_reason" rows="3" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #fda4af; outline: none; font-size: 13px;" placeholder="Provide reason for rejecting citizenship/KYC documents..."></textarea>
+                    <div style="margin-top: 10px;">
+                        <button type="submit" class="btn btn-reject">Confirm Rejection</button>
+                        <button type="button" class="btn btn-back" onclick="toggleRejectionForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        {% else %}
+        <div class="card" style="text-align: center; padding: 40px;">
+            <p style="color: var(--text-muted); margin: 0;">This user has not submitted an owner KYC application.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleRejectionForm() {
+    var form = document.getElementById('rejectionForm');
+    form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+}
+</script>
+
+{% endblock %}

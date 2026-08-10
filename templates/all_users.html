@@ -1,0 +1,376 @@
+{% extends "admin_base.html" %}
+
+{% block title %}All Users - Admin{% endblock %}
+{% block heading %}👥 Registered Users{% endblock %}
+
+{% block content %}
+<style>
+  /* Search & Filter Bar Controls */
+  .filter-bar {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .search-box input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .filter-group select {
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background-color: #ffffff;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-group select:focus {
+    border-color: #0284c7;
+  }
+
+  /* Table & Layout Controls */
+  .admin-table-container {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow-x: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  th {
+    background: #1e293b;
+    color: #ffffff;
+    padding: 14px 16px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #334155;
+  }
+
+  tr:hover {
+    background-color: #f8fafc;
+  }
+
+  /* Status & Role Badges */
+  .badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .role {
+    text-transform: uppercase;
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+
+  .verify {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .notverify {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .active {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .blocked {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  /* Base Action Button Styles */
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn.view {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+  .btn.view:hover {
+    background-color: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+  }
+
+  .btn.block {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+  .btn.block:hover {
+    background-color: #ea580c;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(234, 88, 12, 0.25);
+  }
+
+  .btn.unblock {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+  .btn.unblock:hover {
+    background-color: #16a34a;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+  }
+
+  .btn.delete {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  .btn.delete:hover {
+    background-color: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
+  }
+</style>
+
+<!-- Search & Filter Controls -->
+<div class="filter-bar">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Search by name, email, or phone..." 
+      onkeyup="filterUsers()"
+    />
+  </div>
+
+  <div class="filter-group">
+    <select id="roleFilter" onchange="filterUsers()">
+      <option value="all">All Roles</option>
+      <option value="user">User</option>
+      <option value="owner">Owner</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <select id="statusFilter" onchange="filterUsers()">
+      <option value="all">All Statuses</option>
+      <option value="active">Active</option>
+      <option value="blocked">Blocked</option>
+    </select>
+  </div>
+</div>
+
+<div class="admin-table-container">
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Verified</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr 
+        class="user-row" 
+        data-role="{{ user.role | lower }}" 
+        data-status="{% if user.isactive %}active{% else %}blocked{% endif %}"
+      >
+        <td><strong>#{{ user.id }}</strong></td>
+        <td class="user-fullname"><strong>{{ user.fullname or 'N/A' }}</strong></td>
+        <td class="user-email">{{ user.email }}</td>
+        <td class="user-phone">{{ user.phone if user.phone else 'N/A' }}</td>
+        <td>
+          <span class="badge role">{{ user.role }}</span>
+        </td>
+        <td>
+          {% if user.isverified %}
+          <span class="badge verify">✔ Verified</span>
+          {% else %}
+          <span class="badge notverify">Pending</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if user.isactive %}
+          <span class="badge active">Active</span>
+          {% else %}
+          <span class="badge blocked">Blocked</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="btn-group">
+            <!-- Direct Link to admin_user.html -->
+            <a href="{{ url_for('admin.user_details', user_id=user.id) }}" class="btn view">
+              View Profile
+            </a>
+
+            {% if user.role != 'admin' %}
+              <!-- Toggle Block / Unblock -->
+              {% if user.isactive %}
+                <a href="{{ url_for('admin.toggle_user_status', user_id=user.id) }}" class="btn block">Block</a>
+              {% else %}
+                <a href="{{ url_for('admin.toggle_user_status', user_id=user.id) }}" class="btn unblock">Unblock</a>
+              {% endif %}
+
+              <!-- Delete User -->
+              <a
+                href="{{ url_for('admin.delete_user', user_id=user.id) }}"
+                class="btn delete"
+                onclick="return confirm('Are you sure you want to permanently delete this user account? This cannot be undone.');"
+              >
+                Delete
+              </a>
+            {% else %}
+              <span style="color: #94a3b8; font-size: 13px; font-style: italic; padding-left: 6px;">Protected</span>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr id="emptyRow">
+        <td colspan="8" style="text-align: center; color: #64748b; padding: 30px;">
+          No registered users found.
+        </td>
+      </tr>
+      {% endfor %}
+      
+      <!-- Hidden dynamic no-results row for search -->
+      <tr id="noMatchesRow" style="display: none;">
+        <td colspan="8" style="text-align: center; color: #64748b; padding: 30px;">
+          No users match your search and filter criteria.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function filterUsers() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase().trim();
+    const selectedRole = document.getElementById('roleFilter').value;
+    const selectedStatus = document.getElementById('statusFilter').value;
+    
+    const rows = document.querySelectorAll('.user-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const fullname = row.querySelector('.user-fullname').innerText.toLowerCase();
+      const email = row.querySelector('.user-email').innerText.toLowerCase();
+      const phone = row.querySelector('.user-phone').innerText.toLowerCase();
+      const role = row.getAttribute('data-role');
+      const status = row.getAttribute('data-status');
+
+      // 1. Check Search Match (Full Name, Email, or Phone)
+      const matchesSearch = fullname.includes(searchInput) || 
+                            email.includes(searchInput) || 
+                            phone.includes(searchInput);
+
+      // 2. Check Role Filter Match
+      const matchesRole = (selectedRole === 'all') || (role === selectedRole);
+
+      // 3. Check Status Filter Match
+      const matchesStatus = (selectedStatus === 'all') || (status === selectedStatus);
+
+      // Show/Hide row based on criteria match
+      if (matchesSearch && matchesRole && matchesStatus) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    // Handle "No matching results" display
+    const noMatchesRow = document.getElementById('noMatchesRow');
+    if (noMatchesRow) {
+      if (visibleCount === 0 && rows.length > 0) {
+        noMatchesRow.style.display = '';
+      } else {
+        noMatchesRow.style.display = 'none';
+      }
+    }
+  }
+</script>
+{% endblock %}

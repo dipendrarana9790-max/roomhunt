@@ -1,0 +1,240 @@
+{% extends "owner_base.html" %}
+
+{% block title %}Edit Room Details{% endblock %}
+{% block heading %}Edit Room Details{% endblock %}
+
+{% block content %}
+
+<style>
+.edit-container {
+    max-width: 650px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin: 20px auto;
+}
+
+.edit-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #1e293b;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #334155;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.coordinates-row {
+    display: flex;
+    gap: 15px;
+}
+
+.coordinates-row .form-group {
+    flex: 1;
+}
+
+.image-preview-wrapper {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.current-img-thumbnail {
+    width: 90px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.hint-text {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.btn-submit:hover {
+    background: #2980b9;
+}
+
+.btn-cancel {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-cancel:hover {
+    text-decoration: underline;
+}
+</style>
+
+<div class="edit-container">
+
+    <h2>Edit Room Details</h2>
+
+    <!-- Form uses room.room_id to build the Flask route correctly -->
+    <form action="{{ url_for('owner.edit_room', id=room.room_id) }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <!-- Room Title -->
+        <div class="form-group">
+            <label for="title">Room Title</label>
+            <input
+                id="title"
+                type="text"
+                name="title"
+                class="form-control"
+                value="{{ room.title }}"
+                required
+            >
+        </div>
+
+        <!-- Price -->
+        <div class="form-group">
+            <label for="price">Price (per month)</label>
+            <input
+                id="price"
+                type="number"
+                step="0.01"
+                name="price"
+                class="form-control"
+                value="{{ room.price }}"
+                required
+            >
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input
+                id="address"
+                type="text"
+                name="address"
+                class="form-control"
+                value="{{ room.address }}"
+                required
+            >
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                name="description"
+                class="form-control"
+                required
+            >{{ room.description }}</textarea>
+        </div>
+
+        <!-- Coordinates -->
+        <div class="coordinates-row">
+            <div class="form-group">
+                <label for="latitude">Latitude</label>
+                <input
+                    id="latitude"
+                    type="text"
+                    name="latitude"
+                    class="form-control"
+                    value="{{ room.latitude or '' }}"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="longitude">Longitude</label>
+                <input
+                    id="longitude"
+                    type="text"
+                    name="longitude"
+                    class="form-control"
+                    value="{{ room.longitude or '' }}"
+                >
+            </div>
+        </div>
+
+        <!-- Room Image -->
+        <div class="form-group">
+            <label for="room_image">Update Room Image</label>
+            <div class="image-preview-wrapper">
+                {% if room.room_image %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + room.room_image) }}"
+                        alt="Current Room Image"
+                        class="current-img-thumbnail"
+                    >
+                {% endif %}
+                <div style="flex: 1;">
+                    <input
+                        id="room_image"
+                        type="file"
+                        name="room_image"
+                        class="form-control"
+                        accept="image/*"
+                    >
+                    <div class="hint-text">Leave blank if you do not want to change the image.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit & Cancel Buttons -->
+        <button type="submit" class="btn-submit">
+            Update Room
+        </button>
+
+        <a href="{{ url_for('owner.rooms') }}" class="btn-cancel">
+            Cancel & Return to My Rooms
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin - System Analytics & Summary Report{% endblock %}
+{% block heading %}Executive System Summary & Financials{% endblock %}
+
+{% block content %}
+<style>
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.stat-card.highlight {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.stat-card h4 {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card .number {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 8px 0;
+}
+
+.stat-card .meta {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.section-container {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+.section-title {
+    margin-top: 0;
+    font-size: 16px;
+    color: #1e293b;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table th {
+    background: #f8fafc;
+    color: #475569;
+    padding: 12px;
+    font-size: 12px;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.summary-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+
+.btn-print {
+    background: #0284c7;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-print:hover { background: #0369a1; }
+
+@media print {
+    .btn-print, nav, .sidebar { display: none !important; }
+    body { background: white; }
+    .section-container, .stat-card { box-shadow: none; border: 1px solid #cbd5e1; }
+}
+</style>
+
+<div class="report-header">
+    <p style="color: #64748b; margin: 0;">Report Generated: <strong>{{ report.generated_at }}</strong></p>
+    <button class="btn-print" onclick="window.print()">🖨️ Print Executive Report</button>
+</div>
+
+<!-- Financial Summary Grid -->
+<div class="report-grid">
+    <div class="stat-card highlight">
+        <h4>Booked Revenue Value</h4>
+        <div class="number" style="color: #15803d;">Rs. {{ "%.2f"|format(report.financials.accepted_revenue) }}</div>
+        <div class="meta">From {{ report.interests.accepted }} accepted bookings</div>
+    </div>
+
+    <div class="stat-card">
+        <h4>Estimated Admin Fee (10%)</h4>
+        <div class="number" style="color: #0284c7;">Rs. {{ "%.2f"|format(report.financials.admin_commission) }}</div>
+        <div class="meta">Calculated platform revenue</div>
+    </div>
+
+    <div class="stat-card">
+        <h4>Total Listed Asset Value</h4>
+        <div class="number">Rs. {{ "%.2f"|format(report.rooms.total_inventory) }}</div>
+        <div class="meta">Combined pricing of {{ report.rooms.total }} rooms</div>
+    </div>
+
+    <div class="stat-card">
+        <h4>Avg. Room Rate</h4>
+        <div class="number">Rs. {{ "%.2f"|format(report.rooms.avg_price) }}</div>
+        <div class="meta">Min: Rs. {{ report.rooms.min_price }} | Max: Rs. {{ report.rooms.max_price }}</div>
+    </div>
+</div>
+
+<!-- Operational Overview Cards -->
+<div class="report-grid">
+    <div class="stat-card">
+        <h4>User Accounts</h4>
+        <div class="number">{{ report.users.total }}</div>
+        <div class="meta">Active: {{ report.users.active }} | Blocked: {{ report.users.blocked }}</div>
+    </div>
+
+    <div class="stat-card">
+        <h4>KYC Owners</h4>
+        <div class="number">{{ report.owners.total }}</div>
+        <div class="meta">Approved: {{ report.owners.approved }} | Pending: {{ report.owners.pending }}</div>
+    </div>
+
+    <div class="stat-card">
+        <h4>Room Listings</h4>
+        <div class="number">{{ report.rooms.total }}</div>
+        <div class="meta">Available: {{ report.rooms.available }} | Occupied: {{ report.rooms.occupied }}</div>
+    </div>
+
+    <div class="stat-card">
+        <h4>Booking Requests</h4>
+        <div class="number">{{ report.interests.total }}</div>
+        <div class="meta">Accepted: {{ report.interests.accepted }} | Pending: {{ report.interests.pending }}</div>
+    </div>
+</div>
+
+<!-- Comprehensive Operational Table -->
+<div class="section-container">
+    <h3 class="section-title">System Metrics Summary</h3>
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Metric Item</th>
+                <th>Value / Count</th>
+                <th>Status / Distribution</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>User Roles</strong></td>
+                <td>Registered Regular Users</td>
+                <td>{{ report.users.regular }}</td>
+                <td><span class="badge badge-success">Active Role</span></td>
+            </tr>
+            <tr>
+                <td><strong>User Roles</strong></td>
+                <td>Registered Owners</td>
+                <td>{{ report.users.owners }}</td>
+                <td><span class="badge badge-success">Active Role</span></td>
+            </tr>
+            <tr>
+                <td><strong>KYC Applications</strong></td>
+                <td>Pending Verification</td>
+                <td>{{ report.owners.pending }}</td>
+                <td>
+                    {% if report.owners.pending > 0 %}
+                        <span class="badge badge-warning">Needs Review</span>
+                    {% else %}
+                        <span class="badge badge-success">Up to Date</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Room Listings</strong></td>
+                <td>Pending Approval</td>
+                <td>{{ report.rooms.pending }}</td>
+                <td>
+                    {% if report.rooms.pending > 0 %}
+                        <span class="badge badge-warning">Action Required</span>
+                    {% else %}
+                        <span class="badge badge-success">All Verified</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Booking Requests</strong></td>
+                <td>Accepted Applications</td>
+                <td>{{ report.interests.accepted }}</td>
+                <td><span class="badge badge-success">Confirmed</span></td>
+            </tr>
+            <tr>
+                <td><strong>Booking Requests</strong></td>
+                <td>Rejected Applications</td>
+                <td>{{ report.interests.rejected }}</td>
+                <td><span class="badge badge-danger">Closed</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Latest Room Submissions -->
+<div class="section-container">
+    <h3 class="section-title">Recent Room Listings</h3>
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Owner</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room, user in report.recent_rooms %}
+            <tr>
+                <td>#{{ room.room_id }}</td>
+                <td><strong>{{ room.title }}</strong></td>
+                <td>{{ user.fullname }}</td>
+                <td>Rs. {{ "%.2f"|format(room.price) }}</td>
+                <td>
+                    {% if room.approved %}
+                        <span class="badge badge-success">Verified</span>
+                    {% else %}
+                        <span class="badge badge-warning">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No room records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

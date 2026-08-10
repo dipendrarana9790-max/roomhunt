@@ -1,0 +1,420 @@
+{% extends "owner_base.html" %} {% block title %}Interested Tenants - Owner
+Panel{% endblock %} {% block extra_head %}
+<style>
+  .rooms-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .room-card-panel {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+  }
+
+  .room-card-header {
+    background: #1e293b;
+    color: #ffffff;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .room-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .room-card-header h3 a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .room-card-header h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .room-meta-tags {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #cbd5e1;
+  }
+
+  .user-queue-container {
+    padding: 24px;
+    background-color: #f8fafc;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .user-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    position: relative;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .user-card.is-first {
+    border: 2px solid #3b82f6;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
+  }
+
+  .queue-badge {
+    position: absolute;
+    top: -10px;
+    right: 15px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .queue-badge.waiting {
+    background: #64748b;
+  }
+
+  .user-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .user-avatar {
+    width: 44px;
+    height: 44px;
+    background: #e2e8f0;
+    color: #334155;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .user-title-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-date {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 16px;
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    word-break: break-word;
+  }
+
+  .user-message-box {
+    background: #f1f5f9;
+    border-left: 3px solid #3b82f6;
+    padding: 10px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: #334155;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .user-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+    margin-top: auto;
+  }
+
+  .queue-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .btn-action {
+    flex: 1;
+    padding: 9px 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+  }
+
+  .btn-accept {
+    background-color: #16a34a;
+    color: #ffffff;
+  }
+
+  .btn-accept:hover {
+    background-color: #15803d;
+  }
+
+  .btn-disabled {
+    background-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+
+  .btn-reject {
+    background-color: #dc2626;
+    color: #ffffff;
+  }
+
+  .btn-reject:hover {
+    background-color: #b91c1c;
+  }
+
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+    display: inline-block;
+  }
+
+  .status-pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .status-accepted {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .queue-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  .no-interests {
+    padding: 20px 0;
+    color: #94a3b8;
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container">
+  <h2>Room Queue & Interested Tenants</h2>
+
+  {% if rooms %}
+  <div class="rooms-container">
+    {% for room in rooms %}
+    <div class="room-card-panel">
+      <!-- Room Header Bar -->
+      <div class="room-card-header">
+        <h3>
+          🏠
+          <a href="{{ url_for('public.room_detail', room_id=room.room_id) }}"
+            >{{ room.title }}</a
+          >
+        </h3>
+        <div class="room-meta-tags">
+          <span>📍 {{ room.address }}</span>
+          <span>💰 Rs. {{ "%.2f"|format(room.price) }}</span>
+          <span>👥 Total Interested: {{ room.interests|length }}</span>
+        </div>
+      </div>
+
+      <!-- Interested Users Card Grid -->
+      <div class="user-queue-container">
+        {% if room.interests %} {# Find the ID of the first pending interest in
+        FIFO order #} {% set ns = namespace(first_pending_id=None) %} {% for
+        item in room.interests %} {% if item.status == 'pending' and
+        ns.first_pending_id is none %} {% set ns.first_pending_id =
+        item.interest_id %} {% endif %} {% endfor %}
+
+        <div class="cards-grid">
+          {% for interest in room.interests %} {% set is_next_in_line =
+          (interest.interest_id == ns.first_pending_id) %}
+
+          <div class="user-card {% if is_next_in_line %}is-first{% endif %}">
+            {% if interest.status == 'pending' %} {% if is_next_in_line %}
+            <span class="queue-badge">⚡ Next in Line</span>
+            {% else %}
+            <span class="queue-badge waiting">In Queue</span>
+            {% endif %} {% endif %}
+
+            <div>
+              <!-- User Avatar & Header -->
+              <div class="user-card-header">
+                <div class="user-avatar">
+                  {{ interest.user.fullname[0] | upper }}
+                </div>
+                <div class="user-title-info">
+                  <h4 class="user-name">{{ interest.user.fullname }}</h4>
+                  <span class="user-date"
+                    >📅 {{ interest.interested_at.strftime('%b %d, %Y %I:%M %p')
+                    }}</span
+                  >
+                </div>
+              </div>
+
+              <div class="user-details">
+                <div class="detail-item">
+                  <span>📧</span>
+                  <span>{{ interest.user.email }}</span>
+                </div>
+                <div class="detail-item">
+                  <span>📞</span>
+                  {% if interest.status == 'accepted' %}
+                  <span>{{ interest.user.phone or 'Not Provided' }}</span>
+                  {% else %}
+                  <span style="color: #94a3b8; font-style: italic"
+                    >Hidden until accepted</span
+                  >
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- User Message -->
+              <div class="user-message-box">
+                "{{ interest.message or 'No message provided.' }}"
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="user-card-footer">
+              {% if interest.status == 'pending' %}
+              <div style="width: 100%">
+                {% if is_next_in_line %}
+                <!-- Form for Next in Line (both Accept & Reject enabled) -->
+                <div class="queue-actions">
+                  <form
+                    action="{{ url_for('owner.update_interest_status', interest_id=interest.interest_id) }}"
+                    method="POST"
+                    style="flex: 1"
+                  >
+                    <input type="hidden" name="action" value="accepted" />
+                    <button
+                      type="submit"
+                      class="btn-action btn-accept"
+                      style="width: 100%"
+                    >
+                      Accept
+                    </button>
+                  </form>
+
+                  <form
+                    action="{{ url_for('owner.update_interest_status', interest_id=interest.interest_id) }}"
+                    method="POST"
+                    style="flex: 1"
+                  >
+                    <input type="hidden" name="action" value="rejected" />
+                    <button
+                      type="submit"
+                      class="btn-action btn-reject"
+                      style="width: 100%"
+                    >
+                      Reject
+                    </button>
+                  </form>
+                </div>
+                {% else %}
+                <!-- Disabled actions for users further down in the queue -->
+                <div class="queue-actions">
+                  <button
+                    class="btn-action btn-disabled"
+                    disabled
+                    title="Process earlier applicants first."
+                  >
+                    Accept
+                  </button>
+                  <button
+                    class="btn-action btn-disabled"
+                    disabled
+                    title="Process earlier applicants first."
+                  >
+                    Reject
+                  </button>
+                </div>
+                <div class="queue-hint">
+                  Awaiting decision on earlier applicant.
+                </div>
+                {% endif %}
+              </div>
+              {% else %}
+              <span class="status-badge status-{{ interest.status }}">
+                {{ interest.status }}
+              </span>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-interests">
+          No users have expressed interest in this room yet.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <h3>No Rooms Found</h3>
+    <p>You haven't added any rooms yet.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

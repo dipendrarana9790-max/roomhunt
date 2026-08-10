@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}
+Become Owner
+{% endblock %}
+
+{% block content %}
+
+<style>
+.container {
+    width: 480px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    margin: 40px auto;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e293b;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #334155;
+    font-size: 14px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+    height: 70px;
+}
+
+.hint-text {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 25px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background: #0056b3;
+}
+</style>
+
+<div class="container">
+
+    <h2>Become an Owner</h2>
+
+    <form action="{{ url_for('user.become_owner') }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <!-- Citizenship Number -->
+        <label for="citizenship_no">Citizenship Number</label>
+        <input
+            id="citizenship_no"
+            type="text"
+            name="citizenship_no"
+            placeholder="e.g. 12-01-78-12345"
+            required
+        >
+
+        <!-- Contact Number -->
+        <label for="contact">Contact Number</label>
+        <input
+            id="contact"
+            type="tel"
+            name="contact"
+            placeholder="e.g. 9800000000"
+            required
+        >
+
+        <!-- Address -->
+        <label for="address">Address</label>
+        <textarea
+            id="address"
+            name="address"
+            placeholder="Enter your permanent or current address"
+            required
+        ></textarea>
+
+        <!-- Citizenship Front Photo -->
+        <label for="citizenship_photo">Citizenship Photo (Front)</label>
+        <input
+            id="citizenship_photo"
+            type="file"
+            name="citizenship_photo"
+            accept="image/*"
+            required
+        >
+
+        <!-- Citizenship Back Photo -->
+        <label for="citizenship_back_photo">Citizenship Photo (Back)</label>
+        <input
+            id="citizenship_back_photo"
+            type="file"
+            name="citizenship_back_photo"
+            accept="image/*"
+            required
+        >
+
+        <!-- Profile Photo -->
+        <label for="profile_photo">Profile Photo</label>
+        <input
+            id="profile_photo"
+            type="file"
+            name="profile_photo"
+            accept="image/*"
+            required
+        >
+        <div class="hint-text">Upload a clear photo showing your face.</div>
+
+        <button type="submit">
+            Submit Application
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

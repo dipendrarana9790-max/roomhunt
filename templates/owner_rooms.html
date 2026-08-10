@@ -1,0 +1,129 @@
+{% extends "owner_base.html" %}
+
+{% block title %}My Rooms{% endblock %}
+
+{% block heading %}My Rooms{% endblock %}
+
+{% block content %}
+
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+}
+
+th {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+}
+
+td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background: #f8f9fa;
+}
+
+img {
+    width: 90px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.available {
+    color: green;
+    font-weight: bold;
+}
+
+.unavailable {
+    color: red;
+    font-weight: bold;
+}
+
+.approved {
+    color: green;
+    font-weight: bold;
+}
+
+.pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+.edit {
+    background: #3498db;
+}
+
+.delete {
+    background: #e74c3c;
+}
+</style>
+
+<table>
+<tr>
+    <th>ID</th>
+    <th>Image</th>
+    <th>Title</th>
+    <th>Price</th>
+    <th>Address</th>
+    <th>Availability</th>
+    <th>Approval</th>
+    <th>Action</th>
+</tr>
+
+{% for room in rooms %}
+<tr>
+    <td>{{ room.room_id }}</td>
+    <td>
+        <img src="{{ url_for('static', filename='uploads/' + room.room_image) }}" alt="Room Image">
+    </td>
+    <td>{{ room.title }}</td>
+    <td>Rs. {{ room.price }}</td>
+    <td>{{ room.address }}</td>
+    <td>
+        {% if room.is_available %}
+            <span class="available">Available</span>
+        {% else %}
+            <span class="unavailable">Not Available</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if room.approved %}
+            <span class="approved">Approved</span>
+        {% else %}
+            <span class="pending">Pending</span>
+        {% endif %}
+    </td>
+    <td>
+        <!-- Using room.room_id to match your model's primary key property -->
+        <a href="{{ url_for('owner.edit_room', id=room.room_id) }}" class="btn edit">Edit</a>
+        
+        <a href="{{ url_for('owner.delete_room', id=room.room_id) }}"
+           class="btn delete"
+           onclick="return confirm('Are you sure you want to delete this room?')">
+            Delete
+        </a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

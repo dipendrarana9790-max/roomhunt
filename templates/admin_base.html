@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Admin Panel - Room Hunt{% endblock %}</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        background: #f4f6f9;
+        min-height: 100vh;
+        display: flex;
+      }
+
+      /* Sidebar Navigation */
+      .sidebar {
+        width: 250px;
+        min-width: 250px;
+        background: #1e293b;
+        color: white;
+        min-height: 100vh;
+        padding: 25px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar .logo {
+        padding: 0 25px 25px;
+        border-bottom: 1px solid #334155;
+      }
+
+      .sidebar .logo h2 {
+        font-size: 20px;
+        color: #ffffff;
+      }
+
+      .sidebar .logo p {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 2px;
+      }
+
+      .sidebar ul {
+        list-style: none;
+        margin-top: 20px;
+      }
+
+      .sidebar ul li a {
+        display: block;
+        padding: 12px 25px;
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .sidebar ul li a:hover {
+        background: #334155;
+        color: #ffffff;
+      }
+
+      /* Main Page Wrapper */
+      .main-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .top-header {
+        background: white;
+        padding: 18px 30px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+
+      .top-header h2 {
+        color: #2c3e50;
+        font-size: 22px;
+      }
+
+      .admin-welcome {
+        font-size: 14px;
+        color: #64748b;
+        font-weight: 600;
+      }
+
+      .container {
+        width: 95%;
+        margin: 25px auto;
+      }
+
+      /* Shared Table Styles */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      table th {
+        background: #2c3e50;
+        color: white;
+        padding: 15px;
+      }
+
+      table td {
+        padding: 14px 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        vertical-align: middle;
+      }
+
+      table tr:hover {
+        background: #f8f9fa;
+      }
+
+      /* Shared Modal Styling */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 550px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <!-- Persistent Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>🏠 Room Hunt</h2>
+        <p>Admin Panel</p>
+      </div>
+      <ul>
+        <li><a href="/admin/dashboard">📊 Dashboard</a></li>
+        <li><a href="/admin/users">👥 Users</a></li>
+        <li><a href="/admin/owners">🏡 Owner Requests</a></li>
+        <li><a href="/admin/rooms">🏠 Rooms</a></li>
+        <li><a href="/admin/reports">📈 Reports</a></li>
+        <li><a href="/">🏠 Home</a></li>
+        <li><a href="/logout">🚪 Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      <div class="top-header">
+        <h2>{% block heading %}Dashboard{% endblock %}</h2>
+        <div class="admin-welcome">Welcome, Admin</div>
+      </div>
+
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,666 @@
+/* ===========================
+   GLOBAL / BASE STYLES
+=========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding-top: 72px; /* Offsets page content so top content isn't hidden under fixed navbar */
+    background: #f4f4f4;
+}
+
+main {
+    min-height: calc(100vh - 72px);
+}
+
+.container {
+    width: 380px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===========================
+   FIXED NAVBAR / HEADER
+=========================== */
+header, 
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Keeps header above maps, cards, and floating elements */
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: #0d6efd;
+    height: 72px; /* Fixed height matching body padding-top */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo a {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.nav-links a:hover {
+    color: #ffd43b;
+}
+
+.nav-buttons .btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.login-btn {
+    background: white;
+    color: #0d6efd;
+}
+
+.signup-btn {
+    background: #ffc107;
+    color: black;
+}
+
+.login-btn:hover {
+    background: #e9ecef;
+}
+
+.signup-btn:hover {
+    background: #ffca2c;
+}
+
+/* ===========================
+   HERO & AUTH SECTIONS
+=========================== */
+.hero {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #666;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 72px);
+}
+
+/* ===========================
+   ROOMS SECTION (MODERN LOOK)
+=========================== */
+.rooms-section {
+    width: 92%;
+    max-width: 1400px;
+    margin: 40px auto 60px auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.rooms-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.sub-title {
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.page-title {
+    font-size: 38px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 6px;
+    letter-spacing: -0.5px;
+}
+
+/* Grid Layout */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+/* Room Card */
+.room-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.room-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.12);
+}
+
+/* Image Container */
+.room-image-box {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background-color: #f8fafc;
+}
+
+.room-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.room-card:hover .room-image-box img {
+    transform: scale(1.06);
+}
+
+/* Floating Price Tag */
+.price-tag {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.price-tag small {
+    font-weight: 400;
+    font-size: 11px;
+    color: #cbd5e1;
+}
+
+/* Card Body Content */
+.room-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.room-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.address {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.address svg {
+    flex-shrink: 0;
+    color: #94a3b8;
+}
+
+.description {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    /* Clean 2-line truncation */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Modern Pill Button */
+.view-btn {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.view-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.view-btn:hover {
+    background: #2563eb;
+}
+
+.view-btn:hover svg {
+    transform: translateX(3px);
+}
+
+/* Empty State Style */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8fafc;
+    border-radius: 20px;
+    border: 2px dashed #e2e8f0;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.empty-state h3 {
+    margin: 16px 0 8px;
+    color: #1e293b;
+}
+
+.empty-state p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* ===========================
+   ROOM DETAIL SECTION
+=========================== */
+.detail-container {
+    width: 92%;
+    max-width: 1280px;
+    margin: 40px auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.breadcrumb {
+    margin-bottom: 24px;
+}
+
+.breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: #1d4ed8;
+}
+
+/* Grid Layout */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 36px;
+    align-items: start;
+}
+
+/* Main Content Column */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Image Wrapper */
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.status-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.status-badge.available {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge.booked {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Section Cards */
+.section-card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.03);
+}
+
+.section-card h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 16px 0;
+}
+
+.description-text {
+    color: #334155;
+    line-height: 1.7;
+    font-size: 15px;
+    margin: 0;
+    white-space: pre-line;
+}
+
+/* Interactive Map */
+#map {
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+    z-index: 1; /* Stays beneath the header z-index (1000) */
+}
+
+/* Sidebar Pricing Box */
+.sidebar {
+    position: sticky;
+    top: 102px; /* 72px (Header Height) + 30px spacing */
+}
+
+.pricing-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06);
+}
+
+.price-header {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.price-header .amount {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.price-header .period {
+    color: #64748b;
+    font-size: 15px;
+}
+
+.divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 20px 0;
+}
+
+.meta-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.meta-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.meta-list li span {
+    color: #64748b;
+}
+
+.meta-list li strong {
+    color: #0f172a;
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.primary-btn:hover {
+    background: #1d4ed8;
+}
+
+.primary-btn.disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.disclaimer {
+    font-size: 12px;
+    color: #94a3b8;
+    text-align: center;
+    margin: 12px 0 0 0;
+}
+
+/* ===========================
+   OWNER CARD STYLES
+=========================== */
+.owner-card {
+    margin-top: 20px;
+}
+
+.owner-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.owner-avatar-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    flex-shrink: 0;
+    border: 2px solid #e2e8f0;
+}
+
+.owner-avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.owner-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.owner-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.owner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #16a34a;
+    background-color: #f0fdf4;
+    padding: 2px 8px;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+/* ===========================
+   RESPONSIVE BREAKPOINTS
+=========================== */
+@media (max-width: 1280px) {
+    .room-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        position: static;
+    }
+
+    .image-wrapper {
+        height: 320px;
+    }
+}
+
+@media (max-width: 900px) {
+    .room-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .room-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-title {
+        font-size: 30px;
+    }
+
+    .navbar {
+        padding: 18px 4%;
+    }
+}

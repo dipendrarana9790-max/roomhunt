@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Room Hunt{% endblock %}</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <a href="/">🏠 RoomHunt</a>
+        </div>
+
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="#">Rooms</a></li>
+          <li><a href="/my-interests">My Interests</a></li>
+        </ul>
+
+        <div class="nav-buttons">
+          {% if session.get("user_id") %}
+          <span class="welcome"> Welcome, {{ session["fullname"] }} </span>
+
+          {% if session["role"] == "user" %}
+          <a href="{{ url_for('user.become_owner') }}" class="btn signup-btn"> Be Owner </a>
+          {% endif %} 
+          {% if session["role"] == "owner" %}
+          <a href="/owner" class="btn signup-btn">Owner Panel</a>
+          {% endif %} 
+          {% if session["role"] == "admin" %}
+          <a href="/admin/dashboard" class="btn signup-btn">Admin Panel</a>
+          {% endif %}
+
+          <a href="{{ url_for('auth.logout') }}" class="btn login-btn">Logout</a>
+
+          {% else %}
+
+          <a href="{{ url_for('auth.login') }}" class="btn login-btn">Login</a>
+          <a href="{{ url_for('auth.signup') }}" class="btn signup-btn">Sign Up</a>
+
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+
+    <main>{% block content %}{% endblock %}</main>
+  </body>
+</html>
