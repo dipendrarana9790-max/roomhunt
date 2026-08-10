@@ -7,7 +7,6 @@
   :root {
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
-    --primary-soft: #eff6ff;
     --slate-50: #f8fafc;
     --slate-100: #f1f5f9;
     --slate-200: #e2e8f0;
@@ -18,16 +17,15 @@
     --slate-700: #334155;
     --slate-800: #1e293b;
     --slate-900: #0f172a;
-    
-    /* Status Palette */
+
     --emerald-50: #ecfdf5;
     --emerald-200: #a7f3d0;
     --emerald-700: #047857;
-    
+
     --amber-50: #fffbeb;
     --amber-200: #fde68a;
     --amber-700: #b45309;
-    
+
     --rose-50: #fff1f2;
     --rose-200: #fecdd3;
     --rose-700: #be123c;
@@ -59,14 +57,14 @@
     margin: 0;
   }
 
-  /* List Grid Layout */
+  /* List Layout */
   .interests-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
   }
 
-  /* Interest Card */
+  /* Card Layout */
   .interest-card {
     background: #ffffff;
     border-radius: 20px;
@@ -76,7 +74,6 @@
     flex-direction: row;
     overflow: hidden;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
   }
 
   .interest-card:hover {
@@ -85,10 +82,10 @@
     transform: translateY(-2px);
   }
 
-  /* Media Section - Strict bounds for images */
+  /* Image Wrap */
   .card-image-wrap {
-    width: 290px;
-    min-width: 290px;
+    width: 280px;
+    min-width: 280px;
     height: 220px;
     position: relative;
     background: var(--slate-100);
@@ -108,40 +105,42 @@
     transform: scale(1.04);
   }
 
-  /* Floating Status Badge on Image */
+  /* Top Status Badge Overlay (No Queue Position Here) */
   .status-badge-overlay {
     position: absolute;
-    top: 14px;
-    left: 14px;
+    top: 12px;
+    left: 12px;
+    max-width: calc(100% - 24px);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.775rem;
     font-weight: 700;
     letter-spacing: 0.01em;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
     z-index: 2;
+    white-space: nowrap;
   }
 
   .status-pending {
-    background: rgba(254, 243, 199, 0.88);
+    background: rgba(254, 243, 199, 0.95);
     color: var(--amber-700);
     border: 1px solid var(--amber-200);
   }
 
   .status-accepted {
-    background: rgba(220, 252, 231, 0.88);
+    background: rgba(220, 252, 231, 0.95);
     color: var(--emerald-700);
     border: 1px solid var(--emerald-200);
   }
 
   .status-rejected,
   .status-declined {
-    background: rgba(254, 226, 226, 0.88);
+    background: rgba(254, 226, 226, 0.95);
     color: var(--rose-700);
     border: 1px solid var(--rose-200);
   }
@@ -151,12 +150,41 @@
     height: 7px;
     border-radius: 50%;
     display: inline-block;
+    flex-shrink: 0;
   }
 
   .status-pending .status-dot { background-color: var(--amber-700); }
   .status-accepted .status-dot { background-color: var(--emerald-700); }
   .status-rejected .status-dot,
   .status-declined .status-dot { background-color: var(--rose-700); }
+
+  /* Permanent Price Badge on Bottom Left of Image */
+  .image-price-overlay {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .image-price-overlay span {
+    font-size: 0.725rem;
+    font-weight: 500;
+    color: #cbd5e1;
+  }
 
   /* Body Content */
   .card-body {
@@ -167,21 +195,21 @@
     justify-content: space-between;
   }
 
-  .card-top-row {
+  .card-header-group {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 16px;
+    flex-wrap: wrap;
   }
 
   .room-title-link {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--slate-900);
     text-decoration: none;
     line-height: 1.3;
     transition: color 0.15s ease;
-    display: inline-block;
   }
 
   .room-title-link:hover {
@@ -198,7 +226,14 @@
     font-weight: 500;
   }
 
-  /* Host Meta Pill */
+  /* Header Badges on Right */
+  .card-meta-pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
   .host-pill {
     display: inline-flex;
     align-items: center;
@@ -210,25 +245,54 @@
     font-size: 0.8rem;
     color: var(--slate-700);
     font-weight: 600;
-    white-space: nowrap;
   }
 
   .host-avatar {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     object-fit: cover;
     background: var(--slate-200);
   }
 
-  /* Quoted Message */
+  /* Queue Position Badge */
+  .queue-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--amber-50);
+    border: 1px solid var(--amber-200);
+    color: var(--amber-700);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .queue-pill-number {
+    background: var(--amber-700);
+    color: #ffffff;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.725rem;
+    font-weight: 800;
+    padding: 0 4px;
+    box-sizing: border-box;
+  }
+
+  /* Note Box */
   .message-box {
     background: var(--slate-50);
     border: 1px solid var(--slate-200);
     border-left: 3px solid var(--primary);
     padding: 12px 16px;
     border-radius: 8px;
-    margin: 18px 0 0 0;
+    margin: 16px 0 0 0;
     font-size: 0.9rem;
     color: var(--slate-700);
     line-height: 1.5;
@@ -244,7 +308,7 @@
     display: block;
   }
 
-  /* Decision Info Boxes */
+  /* Status Info Banners */
   .status-info-box {
     margin-top: 16px;
     padding: 14px 18px;
@@ -277,40 +341,22 @@
     color: var(--rose-700);
   }
 
-  .contact-host-line {
+  .contact-line {
     margin-top: 10px;
     padding-top: 8px;
     border-top: 1px dashed rgba(4, 120, 87, 0.25);
     font-size: 0.85rem;
   }
 
-  /* Card Footer */
-  .card-footer-row {
+  /* Footer Section */
+  .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 18px;
+    padding-top: 16px;
     border-top: 1px solid var(--slate-100);
     margin-top: 20px;
-  }
-
-  .price-tag {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--slate-900);
-    letter-spacing: -0.01em;
-  }
-
-  .price-tag span {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--slate-500);
-  }
-
-  .footer-right-wrap {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
 
   .date-submitted {
@@ -319,11 +365,11 @@
     font-weight: 500;
   }
 
-  .action-btn-link {
+  .action-btn {
     background: var(--slate-100);
     color: var(--slate-700);
     border: 1px solid var(--slate-200);
-    padding: 8px 16px;
+    padding: 8px 18px;
     border-radius: 10px;
     font-size: 0.875rem;
     font-weight: 600;
@@ -334,11 +380,10 @@
     gap: 6px;
   }
 
-  .action-btn-link:hover {
+  .action-btn:hover {
     background: var(--primary);
     color: #ffffff;
     border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
   }
 
   /* Empty State */
@@ -350,29 +395,16 @@
     border: 2px dashed var(--slate-300);
   }
 
-  .empty-icon-wrap {
-    width: 64px;
-    height: 64px;
-    background: var(--slate-100);
-    color: var(--slate-500);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px auto;
-  }
-
   .empty-state h3 {
     font-size: 1.35rem;
     color: var(--slate-900);
     font-weight: 700;
-    margin: 0 0 8px 0;
+    margin: 16px 0 8px 0;
   }
 
   .empty-state p {
     color: var(--slate-500);
     margin: 0 0 24px 0;
-    font-size: 0.95rem;
   }
 
   .btn-browse {
@@ -383,65 +415,29 @@
     font-weight: 600;
     text-decoration: none;
     display: inline-block;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    transition: all 0.2s ease;
   }
 
-  .btn-browse:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
-  }
-
-  /* Flash Alert Refinements */
-  .alert {
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 20px;
-  }
-
-  .alert-success {
-    background: var(--emerald-50);
-    color: var(--emerald-700);
-    border: 1px solid var(--emerald-200);
-  }
-
-  .alert-danger, .alert-error {
-    background: var(--rose-50);
-    color: var(--rose-700);
-    border: 1px solid var(--rose-200);
-  }
-
-  /* Responsive Layout */
-  @media (max-width: 820px) {
+  /* Mobile Responsive Fixes */
+  @media (max-width: 768px) {
     .interest-card {
       flex-direction: column;
     }
 
     .card-image-wrap {
       width: 100%;
-      height: 210px;
+      height: 200px;
     }
 
     .card-body {
       padding: 20px;
     }
 
-    .card-top-row {
+    .card-header-group {
       flex-direction: column;
-      gap: 12px;
     }
 
-    .card-footer-row {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .footer-right-wrap {
-      width: 100%;
+    .card-footer {
+      flex-direction: row;
       justify-content: space-between;
     }
   }
@@ -452,39 +448,48 @@
 <div class="interests-container">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-      <div class="flash-messages">
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-      </div>
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" style="padding: 12px 16px; margin-bottom: 20px; border-radius: 8px;">
+          {{ message }}
+        </div>
+      {% endfor %}
     {% endif %}
   {% endwith %}
 
   <div class="page-header">
     <h1>My Expressed Interests</h1>
-    <p>Track and manage the status of your room viewing and booking requests.</p>
+    <p>Track the current status and queue position of your room requests.</p>
   </div>
 
   {% if user_interests %}
     <div class="interests-list">
       {% for interest in user_interests %}
         <div class="interest-card">
+          <!-- Room Image & Overlay Badges -->
           <div class="card-image-wrap">
             {% if interest.room.room_image %}
               <img src="{{ url_for('static', filename='uploads/' + interest.room.room_image) }}" alt="{{ interest.room.title }}">
             {% else %}
-              <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Default Room Image">
+              <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Room Image">
             {% endif %}
 
+            <!-- Top Left: Pure Status Badge (Without Position Number) -->
             <div class="status-badge-overlay status-{{ interest.status }}">
               <span class="status-dot"></span>
-              {{ interest.status|capitalize }}
+              {{ interest.status | capitalize }}
+            </div>
+
+            <!-- Bottom Left: Permanent Price Overlay (No Hover Needed) -->
+            <div class="image-price-overlay">
+              Rs. {{ "{:,}".format(interest.room.price) if interest.room.price is number else interest.room.price }}
+              <span>/mo</span>
             </div>
           </div>
 
+          <!-- Card Main Content -->
           <div class="card-body">
             <div>
-              <div class="card-top-row">
+              <div class="card-header-group">
                 <div>
                   <a href="{{ url_for('public.room_detail', room_id=interest.room.room_id) }}" class="room-title-link">
                     {{ interest.room.title }}
@@ -498,16 +503,25 @@
                   </div>
                 </div>
 
-                {% if interest.room.owner and interest.room.owner.user %}
-                  <div class="host-pill">
-                    {% if interest.room.owner.profile_photo %}
-                      <img src="{{ url_for('static', filename='uploads/' + interest.room.owner.profile_photo) }}" alt="Host" class="host-avatar">
-                    {% else %}
-                      <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Host" class="host-avatar">
-                    {% endif %}
-                    <span>{{ interest.room.owner.user.fullname.split()[0] }}</span>
-                  </div>
-                {% endif %}
+                <div class="card-meta-pills">
+                  {% if interest.status == 'pending' and queue_positions is defined and interest.interest_id in queue_positions %}
+                    <div class="queue-pill">
+                      <span class="queue-pill-number">#{{ queue_positions[interest.interest_id] }}</span>
+                      <span>in Line</span>
+                    </div>
+                  {% endif %}
+
+                  {% if interest.room.owner and interest.room.owner.user %}
+                    <div class="host-pill">
+                      {% if interest.room.owner.profile_photo %}
+                        <img src="{{ url_for('static', filename='uploads/' + interest.room.owner.profile_photo) }}" alt="Host" class="host-avatar">
+                      {% else %}
+                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Host" class="host-avatar">
+                      {% endif %}
+                      <span>{{ interest.room.owner.user.fullname.split()[0] }}</span>
+                    </div>
+                  {% endif %}
+                </div>
               </div>
 
               {% if interest.message %}
@@ -517,7 +531,7 @@
                 </div>
               {% endif %}
 
-              <!-- Status Decision Feedback Boxes -->
+              <!-- Status Decisions -->
               {% if interest.status == 'accepted' %}
                 <div class="status-info-box status-info-accepted">
                   <div class="status-info-header">
@@ -527,14 +541,14 @@
                     </svg>
                     Request Accepted!
                   </div>
-                  <p>Great news! The host accepted your interest request. You can now get in touch to coordinate next steps or viewings.</p>
+                  <p>The host accepted your interest request. Reach out to set up a viewing or finalize terms.</p>
                   {% if interest.room.owner and interest.room.owner.user and interest.room.owner.user.phone %}
-                    <div class="contact-host-line">
+                    <div class="contact-line">
                       <strong>Host Phone:</strong> {{ interest.room.owner.user.phone }}
                     </div>
                   {% endif %}
                 </div>
-              {% elif interest.status == 'rejected' or interest.status == 'declined' %}
+              {% elif interest.status in ['rejected', 'declined'] %}
                 <div class="status-info-box status-info-rejected">
                   <div class="status-info-header">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -544,28 +558,19 @@
                     </svg>
                     Request Declined
                   </div>
-                  <p>The host declined this request. You can explore other room options available on the platform.</p>
+                  <p>The host declined this request. You can keep browsing other available listings.</p>
                 </div>
               {% endif %}
             </div>
 
-            <div class="card-footer-row">
-              <div class="price-tag">
-                Rs. {{ "{:,}".format(interest.room.price) if interest.room.price is number else interest.room.price }}
-                <span>/ month</span>
-              </div>
-
-              <div class="footer-right-wrap">
-                <span class="date-submitted">
-                  Requested on {{ interest.interested_at.strftime('%b %d, %Y') if interest.interested_at else 'N/A' }}
-                </span>
-                <a href="{{ url_for('public.room_detail', room_id=interest.room.room_id) }}" class="action-btn-link">
-                  View Room
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </a>
-              </div>
+            <!-- Card Footer -->
+            <div class="card-footer">
+              <span class="date-submitted">
+                Requested on {{ interest.interested_at.strftime('%b %d, %Y') if interest.interested_at else 'N/A' }}
+              </span>
+              <a href="{{ url_for('public.room_detail', room_id=interest.room.room_id) }}" class="action-btn">
+                View Room
+              </a>
             </div>
           </div>
         </div>
@@ -573,11 +578,6 @@
     </div>
   {% else %}
     <div class="empty-state">
-      <div class="empty-icon-wrap">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-        </svg>
-      </div>
       <h3>No Requests Sent Yet</h3>
       <p>When you express interest in a room, your pending requests will show up here.</p>
       <a href="{{ url_for('public.rooms') }}" class="btn-browse">Explore Available Rooms</a>

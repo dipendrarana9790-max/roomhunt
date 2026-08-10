@@ -147,11 +147,55 @@ def my_interests():
 
     user_id = session["user_id"]
 
+    # Retrieve all interest requests made by the logged-in user
+    user_interests = (
+        Interested.query.filter_by(user_id=user_id)
+        .order_by(Interested.interested_at.desc())
+        .all()
+    )
+
+    # Calculate the queue position for pending requests per room
+    queue_positions = {}
+    for interest in user_interests:
+        if interest.status == "pending":
+            # Count how many pending requests for this specific room were submitted 
+            # at or before this request's creation timestamp
+            position = (
+                Interested.query.filter_by(room_id=interest.room_id, status="pending")
+                .filter(Interested.interested_at <= interest.interested_at)
+                .count()
+            )
+            queue_positions[interest.interest_id] = position
+
+    return render_template(
+        "my_interests.html",
+        user_interests=user_interests,
+        queue_positions=queue_positions,
+    )
+    if "user_id" not in session:
+        flash("Please log in to view your expressed interests.", "warning")
+        return redirect(url_for("auth.login"))
+
+    user_id = session["user_id"]
+
     # Query all interest records for the logged-in user ordered by most recent
     user_interests = (
         Interested.query.filter_by(user_id=user_id)
         .order_by(Interested.interested_at.desc())
         .all()
     )
+
+    # Calculate queue position for each pending interest
+    for interest in user_interests:
+        if interest.status == 'pending':
+            # Count how many pending requests were submitted BEFORE or AT the same time for this room
+            queue_position = Interested.query.filter(
+                Interested.room_id == interest.room_id,
+                Interested.status == 'pending',
+                Interested.interested_at <= interest.interested_at
+            ).count()
+            interest.queue_position = queue_position
+        else:
+            interest.queue_position = None
 
     return render_template("my_interests.html", user_interests=user_interests)

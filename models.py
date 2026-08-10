@@ -79,3 +79,4 @@ class Interested(db.Model):
     __table_args__ = (
         db.UniqueConstraint('room_id', 'user_id', name='unique_room_user_interest'),
     )
+    
