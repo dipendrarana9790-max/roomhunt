@@ -354,3 +354,28 @@ def update_interest_status(interest_id):
 
     flash(f"User request updated to {action}.", "success")
     return redirect(url_for("owner.interested_users"))
+
+@owner.route("/owner/room/toggle-availability/<int:room_id>", methods=["POST"])
+def toggle_room_availability(room_id):
+    access = owner_required()
+    if access:
+        return access
+
+    room = Room.query.get_or_404(room_id)
+
+    # Check ownership
+    current_user_id = session.get("user_id")
+    owner_profile = Owner.query.filter_by(user_id=current_user_id).first()
+
+    if not owner_profile or room.owner_id != owner_profile.owner_id:
+        flash("Unauthorized action.", "danger")
+        return redirect(url_for("owner.rooms"))
+
+    # Toggle availability
+    room.is_available = not room.is_available
+    db.session.commit()
+
+    status = "available" if room.is_available else "unavailable"
+    flash(f"Room is now marked as {status}.", "success")
+    return redirect(url_for("owner.rooms")) 
+
